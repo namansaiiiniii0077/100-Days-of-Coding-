@@ -1,44 +1,67 @@
-//Q43: Write a program to check if a number is a strong number.
-
-/*
-Sample Test Cases:
-Input 1:
-145
-Output 1:
-Strong number
-
-Input 2:
-123
-Output 2:
-Not strong number
-
-*/
-
 #include <stdio.h>
+#include <stdlib.h>
 
-int factorial(int n) {
-    if (n == 0) return 1;
-    return n * factorial(n - 1);
+struct Node {
+    int data;
+    struct Node *left, *right;
+};
+
+struct Node* createNode(int val) {
+    struct Node* node = (struct Node*)malloc(sizeof(struct Node));
+    node->data = val;
+    node->left = node->right = NULL;
+    return node;
+}
+
+struct Node* buildTree(int arr[], int n) {
+    if (n == 0 || arr[0] == -1) return NULL;
+
+    struct Node** queue = (struct Node**)malloc(n * sizeof(struct Node*));
+    int front = 0, rear = 0;
+
+    struct Node* root = createNode(arr[0]);
+    queue[rear++] = root;
+
+    int i = 1;
+
+    while (i < n) {
+        struct Node* current = queue[front++];
+
+        if (arr[i] != -1) {
+            current->left = createNode(arr[i]);
+            queue[rear++] = current->left;
+        }
+        i++;
+
+        if (i < n && arr[i] != -1) {
+            current->right = createNode(arr[i]);
+            queue[rear++] = current->right;
+        }
+        i++;
+    }
+
+    free(queue);
+    return root;
+}
+
+void inorder(struct Node* root) {
+    if (root == NULL) return;
+    inorder(root->left);
+    printf("%d ", root->data);
+    inorder(root->right);
 }
 
 int main() {
-    int num, sum = 0, temp;
+    int n;
+    scanf("%d", &n);
 
-    printf("Enter a number: ");
-    scanf("%d", &num);
+    int arr[n];
+    for (int i = 0; i < n; i++)
+        scanf("%d", &arr[i]);
 
-    temp = num;
-    while (temp != 0) {
-        int digit = temp % 10;
-        sum += factorial(digit);
-        temp /= 10;
-    }
+    struct Node* root = buildTree(arr, n);
 
-    if (sum == num) {
-        printf("Output: Strong number\n");
-    } else {
-        printf("Output: Not strong number\n");
-    }
+    inorder(root);
 
     return 0;
 }

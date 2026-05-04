@@ -1,55 +1,62 @@
-//Q41: Write a program to swap the first and last digit of a number.
-
-/*
-Sample Test Cases:
-Input 1:
-1234
-Output 1:
-4231
-
-Input 2:
-1001
-Output 2:
-1001
-
-*/
-
 #include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+struct Node* front = NULL;
+struct Node* rear = NULL;
+
+void enqueue(int x) {
+    struct Node* temp = (struct Node*)malloc(sizeof(struct Node));
+    temp->data = x;
+    temp->next = NULL;
+
+    if (rear == NULL) {
+        front = rear = temp;
+        return;
+    }
+
+    rear->next = temp;
+    rear = temp;
+}
+
+int dequeue() {
+    if (front == NULL)
+        return -1;
+
+    struct Node* temp = front;
+    int value = temp->data;
+
+    front = front->next;
+
+    if (front == NULL)
+        rear = NULL;
+
+    free(temp);
+    return value;
+}
 
 int main() {
-    int num, firstDigit, lastDigit, digits = 0, temp;
+    int N;
+    scanf("%d", &N);
 
-    printf("Enter a number: ");
-    scanf("%d", &num);
+    char op[20];
+    int x;
 
-    lastDigit = num % 10;
+    for (int i = 0; i < N; i++) {
+        scanf("%s", op);
 
-    temp = num;
-    while (temp >= 10) {
-        temp /= 10;
-    }
-    firstDigit = temp;
-
-    
-    if (firstDigit == lastDigit) {
-        printf("Output: %d\n", num);
-        return 0;
-    }
-
-   
-    temp = num;
-    while (temp != 0) {
-        temp /= 10;
-        digits++;
+        if (op[0] == 'e') {
+            scanf("%d", &x);
+            enqueue(x);
+        }
+        else {
+            printf("%d\n", dequeue());
+        }
     }
 
-   
-    num = num % (int)pow(10, digits - 1);
-    num = num / 10;
-
-   
-    num = lastDigit * (int)pow(10, digits - 1) + num * 10 + firstDigit;
-
-    printf("Output: %d\n", num);
     return 0;
 }

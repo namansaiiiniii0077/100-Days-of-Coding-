@@ -1,37 +1,51 @@
-//Q42: Write a program to check if a number is a perfect number.
-
-/*
-Sample Test Cases:
-Input 1:
-6
-Output 1:
-Perfect number
-
-Input 2:
-10
-Output 2:
-Not perfect number
-
-*/
-
 #include <stdio.h>
 
+#define MAX 100
+
+int queue[MAX], front = 0, rear = -1;
+int stack[MAX], top = -1;
+
+void enqueue(int x) {
+    queue[++rear] = x;
+}
+
+int dequeue() {
+    return queue[front++];
+}
+
+int isQueueEmpty() {
+    return front > rear;
+}
+
+void push(int x) {
+    stack[++top] = x;
+}
+
+int pop() {
+    return stack[top--];
+}
+
 int main() {
-    int num, sum = 0;
+    int n;
+    scanf("%d", &n);
 
-    printf("Enter a number: ");
-    scanf("%d", &num);
+    int x;
 
-    for (int i = 1; i <= num / 2; i++) {
-        if (num % i == 0) {
-            sum += i;
-        }
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &x);
+        enqueue(x);
     }
 
-    if (sum == num) {
-        printf("Output: Perfect number\n");
-    } else {
-        printf("Output: Not perfect number\n");
+    while (!isQueueEmpty()) {
+        push(dequeue());
+    }
+
+    while (top != -1) {
+        enqueue(pop());
+    }
+
+    for (int i = front; i <= rear; i++) {
+        printf("%d ", queue[i]);
     }
 
     return 0;
